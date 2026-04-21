@@ -2,223 +2,466 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gold Buying System</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+    :root {
+      --gold: #F5C842;
+      --gold-dark: #C9971A;
+      --bg: #141414;
+      --surface: #1E1E1E;
+      --surface2: #2A2A2A;
+      --border: #333;
+      --text: #F0EAD6;
+      --muted: #888;
+      --green: #4CAF82;
+      --red: #E05C5C;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: Arial;
-      background: #f4f4f4;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      align-items: flex-start;
+      padding: 30px 16px;
     }
 
-    .container {
-      background: #222;
-      padding: 20px;
-      border-radius: 10px;
-      width: 400px;
-      color: white;
-    }
+    .container { width: 100%; max-width: 460px; }
 
-    h2 {
-      text-align: center;
-      color: gold;
+    .header { text-align: center; margin-bottom: 24px; }
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      color: var(--gold);
+      letter-spacing: 1px;
+    }
+    .header p {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
     }
 
     .tabs {
       display: flex;
-      margin-bottom: 10px;
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
     }
-
     .tabs button {
       flex: 1;
       padding: 10px;
-      cursor: pointer;
       border: none;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
     }
+    .tabs button.active { background: var(--gold); color: #111; font-weight: 700; }
 
-    .active {
-      background: gold;
-      font-weight: bold;
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--muted);
+      margin-bottom: 14px;
     }
 
     input {
-      width: 93%;
-      padding: 12px 14px;
-      margin-bottom: 12px;
+      width: 100%;
+      padding: 11px 14px;
+      margin-bottom: 10px;
       border-radius: 8px;
-      border: 2px solid transparent;
+      border: 1px solid var(--border);
       font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--surface2);
+      color: var(--text);
       outline: none;
-      background: #f9f9f9;
-      transition: 0.3s ease;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+      transition: border 0.2s;
     }
+    input:focus { border-color: var(--gold); }
+    input::placeholder { color: var(--muted); }
 
-    input::placeholder {
-      color: #888;
-    }
-
-    input:focus {
-      border: 2px solid gold;
-      background: #fff;
-      box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-    }
-
-    button.calc {
+    .btn {
       width: 100%;
       padding: 12px;
-      background: gold;
       border: none;
-      border-radius: 5px;
-      font-weight: bold;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
       cursor: pointer;
-      margin-bottom: 10px;
+      transition: opacity 0.2s;
+      margin-bottom: 8px;
     }
+    .btn:hover { opacity: 0.88; }
+    .btn-gold { background: var(--gold); color: #111; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
 
-    .result {
-      margin-top: 10px;
+    .result-box {
+      background: var(--surface2);
+      border: 1px solid var(--gold-dark);
+      border-radius: 10px;
+      padding: 16px;
+      margin: 14px 0;
       text-align: center;
-      color: lightgreen;
-    }
-
-    .receipt {
-      background: white;
-      color: black;
-      padding: 10px;
-      border-radius: 5px;
-      margin-top: 10px;
       display: none;
     }
+    .result-box .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .result-box .amount { font-family: 'Playfair Display', serif; font-size: 36px; color: var(--gold); margin-top: 4px; }
 
-    .receipt h3 {
-      text-align: center;
+    .receipt {
+      background: #fff;
+      color: #222;
+      border-radius: 10px;
+      padding: 18px;
+      margin-top: 14px;
+      display: none;
+      font-size: 13px;
+      line-height: 1.8;
     }
+    .receipt h3 { text-align: center; font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 8px; color: #111; }
+    .receipt-row { display: flex; justify-content: space-between; border-bottom: 1px dashed #ddd; padding: 4px 0; }
+    .receipt-total { display: flex; justify-content: space-between; font-weight: 700; font-size: 15px; margin-top: 8px; }
 
-    .print-btn {
-      background: green;
-      color: white;
-      padding: 10px;
-      border: none;
-      width: 100%;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
+    .status-msg { font-size: 13px; padding: 8px 12px; border-radius: 6px; margin: 8px 0; text-align: center; }
+    .status-ok { background: rgba(76,175,130,0.15); color: var(--green); }
+    .status-err { background: rgba(224,92,92,0.15); color: var(--red); }
+
+    .hint { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+    .data-table th { text-align: left; padding: 8px 10px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); }
+    .data-table td { padding: 10px; border-bottom: 1px solid var(--border); color: var(--text); }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .badge-pending  { background: rgba(245,200,66,0.15); color: var(--gold); }
+    .badge-deducted { background: rgba(76,175,130,0.15); color: var(--green); }
+
+    .empty { text-align: center; color: var(--muted); padding: 20px; font-size: 13px; }
 
     @media print {
-      body * {
-        visibility: hidden;
-      }
-      #receipt, #receipt * {
-        visibility: visible;
-      }
-      #receipt {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-      }
+      body * { visibility: hidden; }
+      #receipt, #receipt * { visibility: visible; }
+      #receipt { position: absolute; top: 0; left: 0; width: 100%; }
     }
   </style>
 </head>
 <body>
-
 <div class="container">
-  <h2>Gold Buying</h2>
+
+  <div class="header">
+    <h1>⬡ Gold Buying</h1>
+    <p>Transaction System</p>
+  </div>
 
   <div class="tabs">
     <button id="calcTab" class="active" onclick="showTab('calc')">Calculator</button>
     <button id="adminTab" onclick="showTab('admin')">Admin</button>
   </div>
 
-  <!-- CALCULATOR -->
-  <div id="calculator">
-    <input type="text" id="name" placeholder="Owner Name">
-    <input type="number" id="grams" placeholder="Gold Grams">
-    <input type="number" id="price" placeholder="Price per Gram">
-    <input type="number" id="ca" placeholder="Cash Advance (CA)">
-
-    <button class="calc" onclick="calculate()">Calculate</button>
-
-    <div class="result" id="result">Result: ₱0</div>
-
-    <!-- RECEIPT -->
-    <div class="receipt" id="receipt">
-      <h3>Receipt Summary</h3>
-      <p><strong>Name:</strong> <span id="r_name"></span></p>
-      <p><strong>Grams:</strong> <span id="r_grams"></span></p>
-      <p><strong>Price/gram:</strong> ₱<span id="r_price"></span></p>
-      <p><strong>Gold Value:</strong> ₱<span id="r_gold"></span></p>
-      <p><strong>Cash Advance:</strong> ₱<span id="r_ca"></span></p>
-      <p><strong>Admin Fee:</strong> ₱<span id="r_fee"></span></p>
-      <hr>
-      <p><strong>Total:</strong> ₱<span id="r_total"></span></p>
+  <!-- ========== CALCULATOR ========== -->
+  <div id="calcSection">
+    <div class="card">
+      <div class="card-title">Transaction Details</div>
+      <p class="hint">Type the owner name — cash advance will auto-fill if they have a pending one.</p>
+      <input type="text" id="name" placeholder="Owner Name" oninput="onNameInput(this.value)">
+      <div class="two-col">
+        <input type="number" id="grams" placeholder="Gold Grams">
+        <input type="number" id="price" placeholder="Price / Gram (₱)">
+      </div>
+      <input type="number" id="ca" placeholder="Cash Advance (₱)">
+      <button class="btn btn-gold" onclick="calculate()">Calculate</button>
     </div>
 
-    <button class="print-btn" onclick="printReceipt()">Print Receipt</button>
+    <div class="result-box" id="resultBox">
+      <div class="label">Total Payout</div>
+      <div class="amount" id="resultAmount">₱0.00</div>
+    </div>
+
+    <div class="receipt" id="receipt">
+      <h3>🪙 Receipt</h3>
+      <div class="receipt-row"><span>Owner</span><span id="r_name"></span></div>
+      <div class="receipt-row"><span>Grams</span><span><span id="r_grams"></span>g</span></div>
+      <div class="receipt-row"><span>Price / gram</span><span>₱<span id="r_price"></span></span></div>
+      <div class="receipt-row"><span>Gold Value</span><span>₱<span id="r_gold"></span></span></div>
+      <div class="receipt-row"><span>Cash Advance</span><span>- ₱<span id="r_ca"></span></span></div>
+      <div class="receipt-row"><span>Admin Fee</span><span>- ₱<span id="r_fee"></span></span></div>
+      <div class="receipt-total"><span>TOTAL</span><span>₱<span id="r_total"></span></span></div>
+    </div>
+
+    <div id="saveStatus"></div>
+    <button class="btn btn-outline" onclick="printReceipt()">🖨 Print Receipt</button>
   </div>
 
-  <!-- ADMIN -->
-  <div id="admin" style="display:none;">
-    <input type="number" id="adminFee" placeholder="Administrative Fee">
-    <button class="calc" onclick="saveFee()">Save Fee</button>
-    <div class="result" id="feeStatus"></div>
-  </div>
+  <!-- ========== ADMIN ========== -->
+  <div id="adminSection" style="display:none">
 
+    <div class="card">
+      <div class="card-title">Settings</div>
+      <div class="two-col">
+        <input type="number" id="adminFee" placeholder="Admin Fee (₱)">
+        <input type="number" id="pricePerGram" placeholder="Default Price/gram">
+      </div>
+      <button class="btn btn-gold" onclick="saveSettings()">Save Settings</button>
+      <div id="settingsStatus"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Add Cash Advance</div>
+      <input type="text" id="caOwner" placeholder="Owner Name">
+      <input type="number" id="caAmount" placeholder="Amount (₱)">
+      <input type="text" id="caNote" placeholder="Note (optional)">
+      <button class="btn btn-gold" onclick="addCashAdvance()">Add Cash Advance</button>
+      <div id="caStatus"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Cash Advances per Person</div>
+      <button class="btn btn-outline" onclick="loadAdvances()">🔄 Refresh</button>
+      <div id="advanceList"><div class="empty">Click Refresh to load</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Transaction History</div>
+      <button class="btn btn-outline" onclick="loadTransactions()">🔄 Refresh</button>
+      <div id="transactionList"><div class="empty">Click Refresh to load</div></div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-  let fee = localStorage.getItem('adminFee') || 0;
-  document.getElementById('adminFee').value = fee;
+  const SB_URL = 'https://nhmyolxjuefjmjnhhmmq.supabase.co';
+  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5obXlvbHhqdWVmam1qbmhobW1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3MTk2NTUsImV4cCI6MjA5MjI5NTY1NX0.4f4LsJ0ZYoBR8biBl2bNWnQqv6wzswm4QovZQpROQ8Y';
+
+  async function sb(path, method = 'GET', body = null) {
+    const opts = {
+      method,
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': method === 'POST' ? 'return=representation' : ''
+      }
+    };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(SB_URL + '/rest/v1/' + path, opts);
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  }
 
   function showTab(tab) {
-    document.getElementById('calculator').style.display = tab === 'calc' ? 'block' : 'none';
-    document.getElementById('admin').style.display = tab === 'admin' ? 'block' : 'none';
-
-    document.getElementById('calcTab').classList.toggle('active', tab === 'calc');
+    document.getElementById('calcSection').style.display  = tab === 'calc'  ? 'block' : 'none';
+    document.getElementById('adminSection').style.display = tab === 'admin' ? 'block' : 'none';
+    document.getElementById('calcTab').classList.toggle('active',  tab === 'calc');
     document.getElementById('adminTab').classList.toggle('active', tab === 'admin');
+    if (tab === 'admin') loadSettings();
   }
 
-  function saveFee() {
-    let newFee = document.getElementById('adminFee').value;
-    localStorage.setItem('adminFee', newFee);
-    document.getElementById('feeStatus').innerText = "Saved!";
+  // Auto-fill CA when name is typed
+  let nameTimer = null;
+  function onNameInput(val) {
+    clearTimeout(nameTimer);
+    if (!val.trim()) { document.getElementById('ca').value = ''; return; }
+    nameTimer = setTimeout(() => fetchOwnerCA(val.trim()), 700);
   }
 
-  function calculate() {
-    let name = document.getElementById('name').value;
-    let grams = parseFloat(document.getElementById('grams').value);
-    let price = parseFloat(document.getElementById('price').value);
-    let ca = parseFloat(document.getElementById('ca').value);
-    let fee = parseFloat(localStorage.getItem('adminFee')) || 0;
+  async function fetchOwnerCA(name) {
+    try {
+      const owners = await sb('owners?name=ilike.' + encodeURIComponent(name) + '&select=id');
+      if (!owners.length) { document.getElementById('ca').value = ''; return; }
+      const advances = await sb('cash_advances?owner_id=eq.' + owners[0].id + '&status=eq.pending&select=amount');
+      const total = advances.reduce((sum, r) => sum + parseFloat(r.amount), 0);
+      document.getElementById('ca').value = total > 0 ? total.toFixed(2) : '';
+    } catch(e) {}
+  }
 
-    if (!name || isNaN(grams) || isNaN(price) || isNaN(ca)) {
-      alert("Fill all fields");
+  async function getAdminFee() {
+    try {
+      const data = await sb('settings?key=eq.admin_fee&select=value');
+      return parseFloat(data[0]?.value) || 0;
+    } catch(e) { return 0; }
+  }
+
+  async function loadSettings() {
+    try {
+      const data = await sb('settings?select=key,value');
+      data.forEach(r => {
+        if (r.key === 'admin_fee')      document.getElementById('adminFee').value = r.value;
+        if (r.key === 'price_per_gram') document.getElementById('pricePerGram').value = r.value;
+      });
+    } catch(e) {}
+  }
+
+  async function saveSettings() {
+    const fee   = document.getElementById('adminFee').value;
+    const pgram = document.getElementById('pricePerGram').value;
+    try {
+      await sb('settings?key=eq.admin_fee',      'PATCH', { value: String(fee) });
+      await sb('settings?key=eq.price_per_gram', 'PATCH', { value: String(pgram) });
+      showMsg('settingsStatus', '✓ Settings saved!', 'ok');
+    } catch(e) {
+      showMsg('settingsStatus', '✗ Error: ' + e.message, 'err');
+    }
+  }
+
+  let lastCalc = null;
+
+  async function calculate() {
+    const name  = document.getElementById('name').value.trim();
+    const grams = parseFloat(document.getElementById('grams').value);
+    const price = parseFloat(document.getElementById('price').value);
+    const ca    = parseFloat(document.getElementById('ca').value) || 0;
+    const fee   = await getAdminFee();
+
+    if (!name || isNaN(grams) || isNaN(price)) {
+      alert('Please fill in Owner Name, Grams, and Price per Gram.');
       return;
     }
 
-    let goldValue = grams * price;
-    let total = goldValue - ca - fee;
+    const goldValue = grams * price;
+    const total     = goldValue - ca - fee;
+    lastCalc = { name, grams, price, ca, fee, goldValue, total };
 
-    document.getElementById('result').innerText = "Result: ₱" + total.toFixed(2);
-
-    // Fill receipt
+    document.getElementById('resultBox').style.display = 'block';
+    document.getElementById('resultAmount').textContent = '₱' + total.toFixed(2);
     document.getElementById('receipt').style.display = 'block';
-    document.getElementById('r_name').innerText = name;
-    document.getElementById('r_grams').innerText = grams;
-    document.getElementById('r_price').innerText = price.toFixed(2);
-    document.getElementById('r_gold').innerText = goldValue.toFixed(2);
-    document.getElementById('r_ca').innerText = ca.toFixed(2);
-    document.getElementById('r_fee').innerText = fee.toFixed(2);
-    document.getElementById('r_total').innerText = total.toFixed(2);
+    document.getElementById('r_name').textContent  = name;
+    document.getElementById('r_grams').textContent = grams;
+    document.getElementById('r_price').textContent = price.toFixed(2);
+    document.getElementById('r_gold').textContent  = goldValue.toFixed(2);
+    document.getElementById('r_ca').textContent    = ca.toFixed(2);
+    document.getElementById('r_fee').textContent   = fee.toFixed(2);
+    document.getElementById('r_total').textContent = total.toFixed(2);
+
+    await autoSaveTransaction();
+  }
+
+  async function autoSaveTransaction() {
+    try {
+      let ownerId = null;
+      const existing = await sb('owners?name=ilike.' + encodeURIComponent(lastCalc.name) + '&select=id');
+      if (existing.length > 0) {
+        ownerId = existing[0].id;
+      } else {
+        const created = await sb('owners', 'POST', { name: lastCalc.name });
+        ownerId = created[0].id;
+      }
+      await sb('transactions', 'POST', {
+        owner_id: ownerId, owner_name: lastCalc.name,
+        grams: lastCalc.grams, price_per_gram: lastCalc.price,
+        gold_value: lastCalc.goldValue, cash_advance: lastCalc.ca,
+        admin_fee: lastCalc.fee, total: lastCalc.total
+      });
+      if (lastCalc.ca > 0) {
+        await sb('cash_advances?owner_id=eq.' + ownerId + '&status=eq.pending', 'PATCH', { status: 'deducted' });
+      }
+      showMsg('saveStatus', '✓ Saved!', 'ok');
+    } catch(e) {
+      showMsg('saveStatus', '✗ Not saved: ' + e.message, 'err');
+    }
+  }
+
+  async function addCashAdvance() {
+    const name   = document.getElementById('caOwner').value.trim();
+    const amount = parseFloat(document.getElementById('caAmount').value);
+    const note   = document.getElementById('caNote').value.trim();
+    if (!name || isNaN(amount) || amount <= 0) {
+      showMsg('caStatus', 'Enter owner name and a valid amount', 'err'); return;
+    }
+    try {
+      let ownerId = null;
+      const existing = await sb('owners?name=ilike.' + encodeURIComponent(name) + '&select=id');
+      if (existing.length > 0) {
+        ownerId = existing[0].id;
+      } else {
+        const created = await sb('owners', 'POST', { name });
+        ownerId = created[0].id;
+      }
+      await sb('cash_advances', 'POST', {
+        owner_id: ownerId, amount, note: note || null,
+        advance_date: new Date().toISOString().split('T')[0]
+      });
+      showMsg('caStatus', '✓ Cash advance added!', 'ok');
+      document.getElementById('caOwner').value = '';
+      document.getElementById('caAmount').value = '';
+      document.getElementById('caNote').value = '';
+    } catch(e) {
+      showMsg('caStatus', '✗ Error: ' + e.message, 'err');
+    }
+  }
+
+  async function loadAdvances() {
+    const el = document.getElementById('advanceList');
+    el.innerHTML = '<div class="empty">Loading...</div>';
+    try {
+      const data = await sb('cash_advances?select=*,owners(name)&order=created_at.desc&limit=50');
+      if (!data.length) { el.innerHTML = '<div class="empty">No cash advances yet</div>'; return; }
+      el.innerHTML = `<table class="data-table">
+        <thead><tr><th>Owner</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody>${data.map(r => `<tr>
+          <td>${r.owners?.name || '—'}</td>
+          <td style="color:var(--gold)">₱${parseFloat(r.amount).toFixed(2)}</td>
+          <td><span class="badge badge-${r.status}">${r.status}</span></td>
+          <td style="color:var(--muted)">${r.advance_date}</td>
+        </tr>`).join('')}</tbody></table>`;
+    } catch(e) { el.innerHTML = '<div class="empty">Could not load data</div>'; }
+  }
+
+  async function loadTransactions() {
+    const el = document.getElementById('transactionList');
+    el.innerHTML = '<div class="empty">Loading...</div>';
+    try {
+      const data = await sb('transactions?select=*&order=created_at.desc&limit=50');
+      if (!data.length) { el.innerHTML = '<div class="empty">No transactions yet</div>'; return; }
+      el.innerHTML = `<table class="data-table">
+        <thead><tr><th>Owner</th><th>Grams</th><th>Total</th><th>Date</th></tr></thead>
+        <tbody>${data.map(r => `<tr>
+          <td>${r.owner_name}</td>
+          <td>${r.grams}g</td>
+          <td style="color:var(--gold)">₱${parseFloat(r.total).toFixed(2)}</td>
+          <td style="color:var(--muted)">${r.created_at.slice(0,10)}</td>
+        </tr>`).join('')}</tbody></table>`;
+    } catch(e) { el.innerHTML = '<div class="empty">Could not load data</div>'; }
+  }
+
+  function showMsg(id, msg, type) {
+    const el = document.getElementById(id);
+    el.innerHTML = `<div class="status-msg status-${type}">${msg}</div>`;
+    setTimeout(() => el.innerHTML = '', 4000);
   }
 
   function printReceipt() {
+    if (document.getElementById('receipt').style.display === 'none') {
+      alert('Calculate first before printing!'); return;
+    }
     window.print();
   }
 </script>
-
 </body>
 </html>
