@@ -182,6 +182,7 @@
   <div class="tabs">
     <button id="calcTab" class="active" onclick="showTab('calc')">Calculator</button>
     <button id="adminTab" onclick="showTab('admin')">Admin</button>
+    <button id="historyTab" onclick="showTab('history')">History</button>
   </div>
 
   <!-- ========== CALCULATOR ========== -->
@@ -246,13 +247,17 @@
       <div id="advanceList"><div class="empty">Click Refresh to load</div></div>
     </div>
 
+  </div>
+
+  <!-- ========== HISTORY ========== -->
+  <div id="historySection" style="display:none">
     <div class="card">
       <div class="card-title">Transaction History</div>
       <button class="btn btn-outline" onclick="loadTransactions()">🔄 Refresh</button>
       <div id="transactionList"><div class="empty">Click Refresh to load</div></div>
     </div>
-
   </div>
+
 </div>
 
 <script>
@@ -276,11 +281,14 @@
   }
 
   function showTab(tab) {
-    document.getElementById('calcSection').style.display  = tab === 'calc'  ? 'block' : 'none';
-    document.getElementById('adminSection').style.display = tab === 'admin' ? 'block' : 'none';
-    document.getElementById('calcTab').classList.toggle('active',  tab === 'calc');
-    document.getElementById('adminTab').classList.toggle('active', tab === 'admin');
-    if (tab === 'admin') loadSettings();
+    document.getElementById('calcSection').style.display    = tab === 'calc'    ? 'block' : 'none';
+    document.getElementById('adminSection').style.display   = tab === 'admin'   ? 'block' : 'none';
+    document.getElementById('historySection').style.display = tab === 'history' ? 'block' : 'none';
+    document.getElementById('calcTab').classList.toggle('active',    tab === 'calc');
+    document.getElementById('adminTab').classList.toggle('active',   tab === 'admin');
+    document.getElementById('historyTab').classList.toggle('active', tab === 'history');
+    if (tab === 'admin')   loadSettings();
+    if (tab === 'history') loadTransactions();
   }
 
   // Auto-fill CA when name is typed
